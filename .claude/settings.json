@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/eslint-fix.mjs"
+          },
+          {
+            "type": "command",
+            "command": "node .claude/hooks/tsc-check.mjs"
+          }
+        ]
+      }
+    ]
+  }
+}

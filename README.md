@@ -1,50 +1,61 @@
-# Welcome to your Expo app 👋
+# MyPets
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicação de gestão de animais de estimação (pets) — projecto académico.
+Construída com Expo SDK 54 + React Native, ships para iOS, Android e web.
 
-## Get started
+## Stack
 
-1. Install dependencies
+- **Expo SDK 54** com New Architecture (Fabric/TurboModules) e React Compiler experimental.
+- **expo-router v6** para navegação file-based, com typed routes.
+- **expo-sqlite** para persistência local.
+- **TypeScript estrito** com alias `@/*` apontando para a raiz do projecto.
+- ESLint (`eslint-config-expo`) + Prettier + Husky + lint-staged para qualidade de código.
 
-   ```bash
-   npm install
-   ```
+## Pré-requisitos
 
-2. Start the app
+- Node 20+ (recomendado: usar a versão LTS).
+- npm 10+ (vem com o Node).
+- Para correr em iOS: macOS com Xcode (ou Expo Go num iPhone).
+- Para correr em Android: Android Studio com um emulador, ou Expo Go num telemóvel.
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Comandos
 
 ```bash
-npm run reset-project
+npm install            # instalar dependências (corre `husky` automaticamente)
+npm start              # iniciar o Metro bundler com QR code para Expo Go
+npm run android        # iniciar com target Android
+npm run ios            # iniciar com target iOS
+npm run web            # iniciar a build web (export estático)
+npm run lint           # ESLint
+npm run format         # Prettier --write
+npm run format:check   # Prettier --check (sem modificar)
+npm run typecheck      # tsc --noEmit
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Estrutura
 
-## Learn more
+```
+app/                    rotas (expo-router file-based)
+  _layout.tsx           layout root: Stack + ThemeProvider + StatusBar
+  (tabs)/               grupo de rotas em tabs
+  modal.tsx             ecrã apresentado como modal
+components/             componentes reutilizáveis (ThemedText, ThemedView, ...)
+  ui/                   primitives multi-plataforma (IconSymbol, Collapsible)
+constants/theme.ts      tokens de cores (light/dark) e fontes
+hooks/                  hooks partilhados (useColorScheme, useThemeColor)
+scripts/reset-project.js  script destrutivo — wipe da scaffolding inicial
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Convenções
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- **Cores**: nunca hard-coded. Usa `Colors` em `constants/theme.ts` via o hook `useThemeColor`, ou consome através de `<ThemedText>` / `<ThemedView>`.
+- **Texto**: prefere `<ThemedText type="title|subtitle|defaultSemiBold|link">` em vez de redefinir `fontSize` inline.
+- **Ícones**: usa `<IconSymbol name="...">`. Ícones novos têm de ser registados em `components/ui/icon-symbol.tsx` (mapping SF Symbols → MaterialIcons), senão não renderizam em Android/web.
+- **Cross-platform**: variantes específicas usam sufixos de ficheiro (`.ios.tsx`, `.web.ts`). APIs de browser (`window`, `document`) só dentro de `.web.ts` ou atrás de `Platform.OS === 'web'`.
+- **Pre-commit**: `lint-staged` corre ESLint + Prettier nos ficheiros modificados antes de cada commit. Erros bloqueiam o commit.
 
-## Join the community
+Mais detalhe sobre arquitectura em [`CLAUDE.md`](./CLAUDE.md).
 
-Join our community of developers creating universal apps.
+## Reset (destrutivo)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+`npm run reset-project` move `app/`, `components/`, `hooks/`, `constants/`, `scripts/` para `app-example/` e cria uma scaffolding em branco. Só correr quando se quer recomeçar do zero.
