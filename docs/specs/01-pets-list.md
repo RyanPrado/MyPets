@@ -19,7 +19,7 @@ Primary populated state:
 
 ```text
 +--------------------------+
-|  Os meus pets       [+]  |  ← header: title + add_circle button
+|  Meus pets          [+]  |  ← header: title + add_circle button
 +--------------------------+
 |  [R] Rex                 |
 |      Cão · 6 anos        |
@@ -32,16 +32,16 @@ Primary populated state:
 +--------------------------+
 |  ...                     |  ← FlatList scrollable
 +--------------------------+
-|  Toca para abrir ·       |
-|  mantém para opções      |  ← subtle muted-foreground hint
+|  Toque para abrir ·      |
+|  segure para opções      |  ← subtle muted-foreground hint
 +--------------------------+
 | [Home active]  Explore   |  ← tab bar
 +--------------------------+
 ```
 
-The empty state replaces the list region with a centred column: large `pawprint.fill` icon in `muted-foreground`, title "Ainda não tens pets", paragraph "Adiciona o teu primeiro pet para começares a registar vacinas e cuidados.", and a primary CTA button "+ Adicionar pet". Header and tab bar remain visible.
+The empty state replaces the list region with a centred column: large `pawprint.fill` icon in `muted-foreground`, title "Ainda não tem pets", paragraph "Adicione seu primeiro pet para começar a registrar vacinas e cuidados.", and a primary CTA button "+ Adicionar pet". Header and tab bar remain visible.
 
-The action sheet state: the entire screen dims to ~45% scrim opacity; a bottom sheet (managed by `@gorhom/bottom-sheet`) slides up with a drag handle, a pet preview row (`Avatar` + name + meta), and two action rows — "Editar pet" (neutral, `edit` icon) and "Apagar pet" (destructive, `delete` icon, `text-destructive`). Tap on scrim or swipe-down dismisses.
+The action sheet state: the entire screen dims to ~45% scrim opacity; a bottom sheet (managed by `@gorhom/bottom-sheet`) slides up with a drag handle, a pet preview row (`Avatar` + name + meta), and two action rows — "Editar pet" (neutral, `edit` icon) and "Excluir pet" (destructive, `delete` icon, `text-destructive`). Tap on scrim or swipe-down dismisses.
 
 ## Components
 
@@ -113,17 +113,17 @@ Wrapped in `Alert.alert` confirmation. On success, refetch the list.
 
 ## Interactions
 
-| Trigger                            | Action                                                                                                                                  |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Tap a pet row                      | Navigate to `/pet/[id]` (Pet Detail). Use `router.push({ pathname: '/pet/[id]', params: { id } })`.                                     |
-| Tap header `+`                     | Navigate to `/pet-form` (Pet Form modal, create mode).                                                                                  |
-| Long-press a pet row               | Call `petActionsSheetRef.current?.present(pet)`. Use `onLongPress` on the row's `Pressable`.                                            |
-| In sheet: "Editar pet"             | Dismiss sheet, navigate to `/pet-form?id=<petId>` (edit mode).                                                                          |
-| In sheet: "Apagar pet"             | Dismiss sheet, call `Alert.alert('Apagar?', 'Esta acção é irreversível.', [Cancelar, Apagar])`. On confirm: run `DELETE`, refetch list. |
-| Tap scrim or swipe sheet down      | Dismiss sheet (built-in `@gorhom/bottom-sheet` behavior).                                                                               |
-| Empty state: tap "+ Adicionar pet" | Navigate to `/pet-form` (same as header `+`).                                                                                           |
-| Pull to refresh                    | Refetch the query. Spinner via `RefreshControl`.                                                                                        |
-| Return from Pet Form (`useFocus`)  | Refetch the query. Catches newly created/edited pets without a manual refresh.                                                          |
+| Trigger                            | Action                                                                                                                                   |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Tap a pet row                      | Navigate to `/pet/[id]` (Pet Detail). Use `router.push({ pathname: '/pet/[id]', params: { id } })`.                                      |
+| Tap header `+`                     | Navigate to `/pet-form` (Pet Form modal, create mode).                                                                                   |
+| Long-press a pet row               | Call `petActionsSheetRef.current?.present(pet)`. Use `onLongPress` on the row's `Pressable`.                                             |
+| In sheet: "Editar pet"             | Dismiss sheet, navigate to `/pet-form?id=<petId>` (edit mode).                                                                           |
+| In sheet: "Excluir pet"            | Dismiss sheet, call `Alert.alert('Excluir?', 'Esta ação é irreversível.', [Cancelar, Excluir])`. On confirm: run `DELETE`, refetch list. |
+| Tap scrim or swipe sheet down      | Dismiss sheet (built-in `@gorhom/bottom-sheet` behavior).                                                                                |
+| Empty state: tap "+ Adicionar pet" | Navigate to `/pet-form` (same as header `+`).                                                                                            |
+| Pull to refresh                    | Refetch the query. Spinner via `RefreshControl`.                                                                                         |
+| Return from Pet Form (`useFocus`)  | Refetch the query. Catches newly created/edited pets without a manual refresh.                                                           |
 
 ## States
 
@@ -134,14 +134,14 @@ Wrapped in `Alert.alert` confirmation. On success, refetch the list.
 | Populated    | Query returns 1+ rows                      | `<FlatList>` of rows + footer hint text                                                                                      |
 | Refreshing   | Pull-to-refresh active                     | Native `RefreshControl` spinner at top, list still visible                                                                   |
 | Action sheet | Long-press triggered                       | Scrim + bottom sheet slides up; list dimmed underneath                                                                       |
-| Error        | Query throws (DB corruption, etc.)         | Inline `<Text>` "Não foi possível carregar os teus pets." + retry `<Pressable>`. MVP-acceptable; no toast library yet.       |
+| Error        | Query throws (DB corruption, etc.)         | Inline `<Text>` "Não foi possível carregar seus pets." + retry `<Pressable>`. MVP-acceptable; no toast library yet.          |
 
 ## Accessibility
 
-- Pet row: `accessibilityRole="button"`, `accessibilityLabel={\`${name}, ${species}, ${age}\`}`, `accessibilityHint="Toca para abrir detalhes, mantém pressionado para opções"`.
+- Pet row: `accessibilityRole="button"`, `accessibilityLabel={\`${name}, ${species}, ${age}\`}`, `accessibilityHint="Toque para abrir os detalhes, segure para opções"`.
 - Header `+` button: `accessibilityLabel="Adicionar pet"`, minimum 48×48 hit area.
 - Empty state CTA: `accessibilityLabel="Adicionar primeiro pet"`.
-- Bottom sheet: `BottomSheetModal` from `@gorhom/bottom-sheet` v5 manages focus and provides screen-reader support. Each sheet action is a `Pressable` with `accessibilityRole="button"` and a label that interpolates the pet name: "Editar Rex", "Apagar Rex".
+- Bottom sheet: `BottomSheetModal` from `@gorhom/bottom-sheet` v5 manages focus and provides screen-reader support. Each sheet action is a `Pressable` with `accessibilityRole="button"` and a label that interpolates the pet name: "Editar Rex", "Excluir Rex".
 - Heading hierarchy: header title is the page H1 logically; use `accessibilityRole="header"` on the title `<Text>`.
 - The "Toca para abrir · mantém para opções" footer hint is decorative — wrap in `<View accessible={false}>` to avoid screen-reader clutter.
 

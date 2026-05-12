@@ -17,24 +17,24 @@ Create mode (empty fields, save disabled):
 
 ```text
 +--------------------------+
-| Cancelar  Novo pet  Save |  ← Save in muted/disabled
+| Cancelar  Novo pet Salvar|  ← Salvar in muted/disabled
 +--------------------------+
 |                          |
 |        ⊙ (paw)           |  ← dashed circle, paw icon, camera badge
 |     ╰──[📷]              |
-|   Toca para escolher foto|
+|  Toque para escolher foto|
 |                          |
 |  NOME                    |
-|  [ ex. Rex            ]  |  ← placeholder grey
+|  [ ex.: Rex           ]  |  ← placeholder grey
 |                          |
 |  ESPÉCIE                 |
-|  [ Selecciona espécie ▾] |  ← placeholder grey
+|  [ Selecione a espécie▾] |  ← placeholder grey
 |                          |
 |  DATA NASC. (opcional)   |
-|  [ aaaa-mm-dd         ]  |
+|  [ dd/mm/aaaa         ]  |
 |                          |
 |                          |
-|      [ Guardar ]         |  ← disabled (grey)
+|       [ Salvar ]         |  ← disabled (grey)
 +--------------------------+
 ```
 
@@ -42,12 +42,12 @@ Edit mode (pre-filled, save active):
 
 ```text
 +--------------------------+
-| Cancelar Editar pet Save |
+|Cancelar Editar pet Salvar|
 +--------------------------+
 |                          |
 |        ⊕ (photo)         |  ← actual image, camera badge to change
 |     ╰──[📷]              |
-|   Toca para alterar foto |
+|  Toque para alterar foto |
 |                          |
 |  NOME                    |
 |  [ Rex                ]  |
@@ -56,9 +56,9 @@ Edit mode (pre-filled, save active):
 |  [ Cão                ▾] |
 |                          |
 |  DATA NASC. (opcional)   |
-|  [ 2020-03-15         ]  |
+|  [ 15/03/2020         ]  |
 |                          |
-|  [ Guardar alterações ]  |  ← active primary
+|  [ Salvar alterações  ]  |  ← active primary
 +--------------------------+
 ```
 
@@ -92,7 +92,7 @@ Tap a species → set form value, dismiss sheet. Tap on scrim or swipe-down also
 
 ### New components to create
 
-- **`PhotoUploadCircle`** (`components/photo-upload-circle.tsx`) — circular photo upload widget. Props: `uri: string | null`, `onChange: (uri: string | null) => void`, `size?: number`. When `uri` is null: renders dashed border circle with `pawprint.fill` icon. When `uri` is set: renders `<Image source={{ uri }}>` filling the circle. Always renders the camera badge bottom-right. Tap calls `ImagePicker.launchImageLibraryAsync` (or a small action sheet offering "Câmara / Galeria / Remover foto"). Handles permission requests.
+- **`PhotoUploadCircle`** (`components/photo-upload-circle.tsx`) — circular photo upload widget. Props: `uri: string | null`, `onChange: (uri: string | null) => void`, `size?: number`. When `uri` is null: renders dashed border circle with `pawprint.fill` icon. When `uri` is set: renders `<Image source={{ uri }}>` filling the circle. Always renders the camera badge bottom-right. Tap calls `ImagePicker.launchImageLibraryAsync` (or a small action sheet offering "Câmera / Galeria / Remover foto"). Handles permission requests.
 - **`SpeciesPickerSheet`** (`components/species-picker-sheet.tsx`) — bottom sheet wrapping `<BottomSheetModal>`. Props: `value: Species | null`, `onChange: (value: Species) => void`. Imperative API via `forwardRef`: `present()`, `dismiss()`. Renders title "Espécie" + scrollable list (`<BottomSheetFlatList>`) of `SPECIES`. Selected item shows `checkmark` icon in primary tint.
 
 ### Icon mapping entries to add to `components/ui/icon-symbol.tsx`
@@ -163,36 +163,36 @@ Save button stays disabled until `name` and `species` are both valid. Other erro
 | Trigger                               | Action                                                                                                                                                                                           |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Tap "Cancelar" (header left)          | `router.back()` immediately. (MVP: no dirty-form confirmation.)                                                                                                                                  |
-| Tap "Guardar" / "Guardar alterações"  | Run validation. If invalid, show first error inline. If valid, run `INSERT`/`UPDATE`, then `router.back()`.                                                                                      |
+| Tap "Salvar" / "Salvar alterações"    | Run validation. If invalid, show first error inline. If valid, run `INSERT`/`UPDATE`, then `router.back()`.                                                                                      |
 | Tap photo circle                      | Call `ImagePicker.requestMediaLibraryPermissionsAsync()`, then `launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true })`. Set `photo_uri` from result. |
 | Tap camera badge (alternative source) | Same as photo circle tap — the picker's native UI offers camera/library choice; we don't need a separate sheet.                                                                                  |
 | Long-press photo circle               | Show `Alert.alert("Remover foto?", ...)` → on confirm, set `photo_uri` to `null`. (MVP-acceptable; future iteration may use an action sheet.)                                                    |
 | Tap species dropdown                  | Call `speciesSheetRef.current?.present()`.                                                                                                                                                       |
 | Tap species in sheet                  | Set form `species` to the tapped value, dismiss sheet automatically.                                                                                                                             |
 | Tap scrim / swipe sheet down          | Dismiss without changing value (`@gorhom/bottom-sheet` built-in).                                                                                                                                |
-| Tap date input                        | MVP: focus the text input; user types `aaaa-mm-dd`. Validation on blur and submit. (Future iteration: native `DateTimePicker`.)                                                                  |
+| Tap date input                        | MVP: focus the text input; user types `dd/mm/aaaa`. Stored as ISO `aaaa-mm-dd`. Validation on blur and submit. (Future iteration: native `DateTimePicker`.)                                      |
 | TextInput focus                       | Apply `border-primary` ring; muted placeholder swaps to `text-foreground` as user types.                                                                                                         |
 
 ## States
 
-| State             | When                                        | UI                                                                                                                          |
-| ----------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Create — empty    | Mounted without `id` param                  | All fields empty, placeholders shown, Save disabled.                                                                        |
-| Create — partial  | User started typing                         | Save enabled when `name` non-empty AND `species` set; otherwise disabled.                                                   |
-| Edit — loading    | Mounted with `id`, before `SELECT` resolves | Whole form shows a skeleton (3 input shells with shimmer-less muted bg). Header shows title and "Cancelar" but no Save.     |
-| Edit — loaded     | `SELECT` resolved                           | Form populated with fetched values. Save enabled (treat as "always saveable in edit mode" — UX standard).                   |
-| Submitting        | Save tapped, awaiting DB write              | Save button shows spinner + label "A guardar..."; entire form disabled (`pointerEvents: 'none'`).                           |
-| Invalid           | Save tapped with validation error           | Save button does not run write; first invalid field shows inline error in `text-destructive` below the input.               |
-| Picker open       | `speciesSheetRef.present()` called          | Scrim over form, bottom sheet visible with species list.                                                                    |
-| Permission denied | User rejects camera/library permission      | `Alert.alert("Permissão necessária", "Activa o acesso a fotos nas definições para escolher uma imagem.")`. Photo unchanged. |
+| State             | When                                        | UI                                                                                                                            |
+| ----------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Create — empty    | Mounted without `id` param                  | All fields empty, placeholders shown, Salvar disabled.                                                                        |
+| Create — partial  | User started typing                         | Salvar enabled when `name` non-empty AND `species` set; otherwise disabled.                                                   |
+| Edit — loading    | Mounted with `id`, before `SELECT` resolves | Whole form shows a skeleton (3 input shells with shimmer-less muted bg). Header shows title and "Cancelar" but no Salvar.     |
+| Edit — loaded     | `SELECT` resolved                           | Form populated with fetched values. Salvar enabled (treat as "always saveable in edit mode" — UX standard).                   |
+| Submitting        | Salvar tapped, awaiting DB write            | Salvar button shows spinner + label "Salvando..."; entire form disabled (`pointerEvents: 'none'`).                            |
+| Invalid           | Salvar tapped with validation error         | Salvar button does not run write; first invalid field shows inline error in `text-destructive` below the input.               |
+| Picker open       | `speciesSheetRef.present()` called          | Scrim over form, bottom sheet visible with species list.                                                                      |
+| Permission denied | User rejects camera/library permission      | `Alert.alert("Permissão necessária", "Ative o acesso a fotos nas configurações para escolher uma imagem.")`. Photo unchanged. |
 
 ## Accessibility
 
 - Each `TextInput` has a paired visible `<Text>` label above it; pass the same text via `accessibilityLabel`.
-- Species dropdown `<Pressable>` has `accessibilityRole="combobox"`, `accessibilityLabel="Espécie"`, `accessibilityValue={{ text: species ?? 'Não seleccionada' }}`.
+- Species dropdown `<Pressable>` has `accessibilityRole="combobox"`, `accessibilityLabel="Espécie"`, `accessibilityValue={{ text: species ?? 'Não selecionada' }}`.
 - Photo circle `<Pressable>`: `accessibilityRole="button"`, `accessibilityLabel={uri ? 'Alterar foto do pet' : 'Adicionar foto do pet'}`.
 - Camera badge is decorative; absorb its tap into the photo circle's hit area. Don't expose as separate accessibility node.
-- Save button: `accessibilityLabel` matches its visible text (`Guardar` or `Guardar alterações`); `accessibilityState={{ disabled }}` reflects current validity.
+- Salvar button: `accessibilityLabel` matches its visible text (`Salvar` or `Salvar alterações`); `accessibilityState={{ disabled }}` reflects current validity.
 - Cancel button: `accessibilityLabel="Cancelar"`. Minimum 48×48 hit area.
 - Bottom sheet: `<BottomSheetFlatList>` handles screen-reader announcements. Each species row is `accessibilityRole="button"`, `accessibilityState={{ selected }}`.
 - Form fields ordered top-to-bottom for screen-reader navigation; submit reachable via keyboard "next/done" buttons.
@@ -214,7 +214,7 @@ Save button stays disabled until `name` and `species` are both valid. Other erro
 - [ ] Register the route in `app/_layout.tsx` Stack: `<Stack.Screen name="pet-form" options={{ presentation: 'modal', title: 'Pet' }} />`
 - [ ] Verify icons from spec 01 are in MAPPING (`photo_camera`, `pets`); add new icons: `chevron.down → expand-more`, `checkmark → check`, `photo.fill → image`
 - [ ] Confirm `lib/constants/species.ts` exists from spec 01; if not, create it now
-- [ ] Confirm `expo-image-picker` is configured in `app.json` plugins: `["expo-image-picker", { "photosPermission": "Permite acesso para escolheres uma foto do teu pet.", "cameraPermission": "Permite acesso à câmara para fotografares o teu pet." }]`
+- [ ] Confirm `expo-image-picker` is configured in `app.json` plugins: `["expo-image-picker", { "photosPermission": "Permite acesso para escolher uma foto do seu pet.", "cameraPermission": "Permite acesso à câmera para fotografar seu pet." }]`
 - [ ] Create `components/photo-upload-circle.tsx` manually (custom, not via `/new-themed-component`)
 - [ ] Create `components/species-picker-sheet.tsx` manually (wraps `BottomSheetModal`)
 - [ ] Create `app/pet-form.tsx` with the screen described above:
