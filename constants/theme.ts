@@ -27,6 +27,64 @@ export const Colors = {
   },
 };
 
+/**
+ * Semantic theme tokens that mirror the @theme block in `global.css` (shadcn
+ * naming, zinc palette). Use these in RN `style={}` values; NativeWind's
+ * custom @theme utilities are unreliable on the v5 preview against custom
+ * tokens, so this object is the source of truth for runtime styling.
+ * Keep these values in sync with `global.css`.
+ */
+export const Theme = {
+  light: {
+    background: '#ffffff',
+    foreground: '#09090b',
+    card: '#ffffff',
+    muted: '#f4f4f5',
+    mutedForeground: '#71717a',
+    border: '#e4e4e7',
+    primary: '#18181b',
+    primaryForeground: '#fafafa',
+    accent: '#f4f4f5',
+    destructive: '#dc2626',
+    destructiveForeground: '#fafafa',
+    destructiveSurface: '#fef2f2',
+    destructiveBorder: '#fecaca',
+  },
+  dark: {
+    background: '#09090b',
+    foreground: '#fafafa',
+    card: '#09090b',
+    muted: '#27272a',
+    mutedForeground: '#a1a1aa',
+    border: '#27272a',
+    primary: '#fafafa',
+    primaryForeground: '#18181b',
+    accent: '#27272a',
+    destructive: '#ef4444',
+    destructiveForeground: '#fafafa',
+    destructiveSurface: '#450a0a',
+    destructiveBorder: '#7f1d1d',
+  },
+} as const;
+
+/**
+ * Named font families loaded by `useFonts` in `app/_layout.tsx`. Use these as
+ * the `fontFamily` value in StyleSheet — they correspond to the
+ * `@expo-google-fonts/geist` constants of the same name.
+ */
+export const FontFamilies = {
+  sans: {
+    regular: 'Geist_400Regular',
+    medium: 'Geist_500Medium',
+    semibold: 'Geist_600SemiBold',
+    bold: 'Geist_700Bold',
+  },
+  mono: {
+    regular: 'GeistMono_400Regular',
+    medium: 'GeistMono_500Medium',
+  },
+} as const;
+
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */

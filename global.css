@@ -10,26 +10,34 @@
    query, so `bg-background` already swaps automatically. */
 @theme {
   --color-background: #ffffff;
-  --color-foreground: #11181c;
-  --color-muted-foreground: #687076;
-  --color-border: #e5e7eb;
-  --color-card: #f9fafb;
-  --color-primary: #0a7ea4;
-  --color-primary-foreground: #ffffff;
+  --color-foreground: #09090b;
+  --color-card: #ffffff;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-border: #e4e4e7;
+  --color-primary: #18181b;
+  --color-primary-foreground: #fafafa;
+  --color-accent: #f4f4f5;
   --color-destructive: #dc2626;
-  --color-destructive-foreground: #ffffff;
+  --color-destructive-foreground: #fafafa;
+  --color-destructive-surface: #fef2f2;
+  --color-destructive-border: #fecaca;
 }
 
 @media (prefers-color-scheme: dark) {
   @theme {
-    --color-background: #151718;
-    --color-foreground: #ecedee;
-    --color-muted-foreground: #9ba1a6;
+    --color-background: #09090b;
+    --color-foreground: #fafafa;
+    --color-card: #09090b;
+    --color-muted: #27272a;
+    --color-muted-foreground: #a1a1aa;
     --color-border: #27272a;
-    --color-card: #1e1f20;
-    --color-primary: #38bdf8;
-    --color-primary-foreground: #0c2839;
-    --color-destructive: #f87171;
-    --color-destructive-foreground: #1f0a0a;
+    --color-primary: #fafafa;
+    --color-primary-foreground: #18181b;
+    --color-accent: #27272a;
+    --color-destructive: #ef4444;
+    --color-destructive-foreground: #fafafa;
+    --color-destructive-surface: #450a0a;
+    --color-destructive-border: #7f1d1d;
   }
 }

@@ -1,32 +1,4 @@
-import { SymbolView, SymbolViewProps, SymbolWeight } from 'expo-symbols';
-import { StyleProp, ViewStyle } from 'react-native';
-
-export function IconSymbol({
-  name,
-  size = 24,
-  color,
-  style,
-  weight = 'regular',
-}: {
-  name: SymbolViewProps['name'];
-  size?: number;
-  color: string;
-  style?: StyleProp<ViewStyle>;
-  weight?: SymbolWeight;
-}) {
-  return (
-    <SymbolView
-      weight={weight}
-      tintColor={color}
-      resizeMode="scaleAspectFit"
-      name={name}
-      style={[
-        {
-          width: size,
-          height: size,
-        },
-        style,
-      ]}
-    />
-  );
-}
+// iOS used to use native SF Symbols. As of the shadcn redesign we standardise
+// on lucide across all platforms — fewer surprises, single icon vocabulary.
+// This file intentionally re-exports the cross-platform impl.
+export { IconSymbol, type IconSymbolName } from './icon-symbol';
