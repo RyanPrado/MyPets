@@ -4,6 +4,32 @@
 
 @import 'nativewind/theme';
 
+/* Seed theme tokens for the MVP. See docs/specs/00-overview.md for rationale.
+   Token names follow the shadcn/ui convention. Dark mode values applied via
+   prefers-color-scheme — NativeWind's `dark:` variant uses the same media
+   query, so `bg-background` already swaps automatically. */
 @theme {
-  --color-mypets-tint: #0a7ea4;
+  --color-background: #ffffff;
+  --color-foreground: #11181c;
+  --color-muted-foreground: #687076;
+  --color-border: #e5e7eb;
+  --color-card: #f9fafb;
+  --color-primary: #0a7ea4;
+  --color-primary-foreground: #ffffff;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: #151718;
+    --color-foreground: #ecedee;
+    --color-muted-foreground: #9ba1a6;
+    --color-border: #27272a;
+    --color-card: #1e1f20;
+    --color-primary: #38bdf8;
+    --color-primary-foreground: #0c2839;
+    --color-destructive: #f87171;
+    --color-destructive-foreground: #1f0a0a;
+  }
 }
