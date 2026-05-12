@@ -1,0 +1,28 @@
+# Force LF line endings everywhere git considers a file as text.
+# Overrides any local core.autocrlf setting so the repo is consistent
+# across macOS, Linux, and Windows clones.
+* text=auto eol=lf
+
+# Explicit binary types — never touch their bytes.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.ttf   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary
+*.eot   binary
+*.mp4   binary
+*.mp3   binary
+*.zip   binary
+*.pdf   binary
+
+# Native key/cert files referenced in .gitignore but mark anyway in case.
+*.jks   binary
+*.p8    binary
+*.p12   binary
+*.key   binary
+*.mobileprovision binary
