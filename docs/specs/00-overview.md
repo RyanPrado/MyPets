@@ -56,19 +56,19 @@ Dark mode values applied via `@media (prefers-color-scheme: dark)`. NativeWind's
 
 These are pieces of infrastructure shared across multiple screens. Each is scheduled inside the Implementation checklist of the spec that **first needs** it.
 
-| Preparation                                                                                                              | First spec      | Notes                                                                                      |
-| ------------------------------------------------------------------------------------------------------------------------ | --------------- | ------------------------------------------------------------------------------------------ |
-| Seed tokens in `global.css`                                                                                              | (this commit)   | Done before any screen work begins                                                         |
-| Install `@gorhom/bottom-sheet` + wrap `app/_layout.tsx` with `GestureHandlerRootView` and `BottomSheetModalProvider`     | `01-pets-list`  | Needed for long-press action sheet on rows                                                 |
-| Create `lib/constants/species.ts` with the 15-species list                                                               | `02-pet-form`   | Used by the species picker bottom sheet                                                    |
-| Migration `0001-create-pets-table` (id, name, species, birth_date, photo_uri, created_at)                                | `02-pet-form`   | Creates the `pets` table referenced from screen 01 (which can render empty until 02 ships) |
-| Migration `0002-create-vaccines-table` (id, pet_id FK CASCADE, name, date_given, amount_paid, next_due_date, created_at) | `03-pet-detail` | Plus enabling `PRAGMA foreign_keys = ON` in the migrations runner                          |
-| Reusable `Avatar` component with initial-based placeholder (light coloured circle + first letter of pet name)            | `01-pets-list`  | Created via `/new-themed-component`                                                        |
-| Icon mapping entries added to `components/ui/icon-symbol.tsx`                                                            | each spec       | Each spec lists the icons it introduces                                                    |
+| Preparation                                                                                                              | First spec      | Notes                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------ | --------------- | -------------------------------------------------------------------------------------------------- |
+| Seed tokens in `global.css`                                                                                              | (this commit)   | Done before any screen work begins                                                                 |
+| Install `@gorhom/bottom-sheet` + wrap `app/_layout.tsx` with `GestureHandlerRootView` and `BottomSheetModalProvider`     | `01-pets-list`  | Needed for long-press action sheet on rows                                                         |
+| Create `lib/constants/species.ts` with the 15-species list                                                               | `01-pets-list`  | Imported by migration `0001` to generate the `CHECK` clause; reused by the picker in `02-pet-form` |
+| Migration `0001-create-pets-table` (id, name, species + CHECK, birth_date, photo_uri, created_at)                        | `01-pets-list`  | Required before any pet query can run. `CHECK` clause derived from the SPECIES constant            |
+| Migration `0002-create-vaccines-table` (id, pet_id FK CASCADE, name, date_given, amount_paid, next_due_date, created_at) | `03-pet-detail` | Plus enabling `PRAGMA foreign_keys = ON` in the migrations runner                                  |
+| Reusable `Avatar` component with initial-based placeholder (light coloured circle + first letter of pet name)            | `01-pets-list`  | Created via `/new-themed-component`                                                                |
+| Icon mapping entries added to `components/ui/icon-symbol.tsx`                                                            | each spec       | Each spec lists the icons it introduces                                                            |
 
 ## Species list (hardcoded for MVP)
 
-To be created in `lib/constants/species.ts` as part of screen 02's checklist:
+To be created in `lib/constants/species.ts` as part of screen 01's checklist (needed early because migration `0001` derives the SQL `CHECK` clause from this constant):
 
 ```ts
 export const SPECIES = [
