@@ -44,3 +44,4 @@ app-example
 
 # Superpowers visual brainstorm session artefacts
 .superpowers/
+.claude/worktrees/
