@@ -1,9 +1,13 @@
 import {
   AlertTriangle,
+  Camera,
+  Check,
+  ChevronDown,
   ChevronRight,
   Code2,
   Compass,
   Home,
+  Image as ImageIcon,
   PawPrint,
   PencilLine,
   Plus,
@@ -38,6 +42,11 @@ const MAPPING: Record<string, LucideIcon> = {
   'alert-triangle': AlertTriangle,
   'refresh-cw': RefreshCw,
   compass: Compass,
+  // pet form additions
+  'chevron.down': ChevronDown,
+  checkmark: Check,
+  'photo.fill': ImageIcon,
+  'camera.fill': Camera,
 };
 
 export type IconSymbolName = keyof typeof MAPPING;
