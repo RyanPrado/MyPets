@@ -1,4 +1,5 @@
 import {
+  AlertCircle,
   AlertTriangle,
   ArrowLeft,
   Camera,
@@ -55,6 +56,8 @@ const MAPPING: Record<string, LucideIcon> = {
   ellipsis: MoreHorizontal,
   'cross.case.fill': Syringe,
   'exclamationmark.triangle.fill': AlertTriangle,
+  // vaccine form additions
+  'exclamationmark.circle.fill': AlertCircle,
 };
 
 export type IconSymbolName = keyof typeof MAPPING;
