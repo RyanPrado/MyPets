@@ -67,6 +67,7 @@ export default function RootLayout() {
                 name="pet-form"
                 options={{ presentation: 'modal', headerShown: false }}
               />
+              <Stack.Screen name="pet/[id]" options={{ headerShown: false }} />
             </Stack>
             <StatusBar style="auto" />
           </ThemeProvider>

@@ -49,6 +49,8 @@ export const Theme = {
     destructiveForeground: '#fafafa',
     destructiveSurface: '#fef2f2',
     destructiveBorder: '#fecaca',
+    warning: '#d97706',
+    warningForeground: '#fef3c7',
   },
   dark: {
     background: '#09090b',
@@ -64,6 +66,8 @@ export const Theme = {
     destructiveForeground: '#fafafa',
     destructiveSurface: '#450a0a',
     destructiveBorder: '#7f1d1d',
+    warning: '#fbbf24',
+    warningForeground: '#451a03',
   },
 } as const;
 

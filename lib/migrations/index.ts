@@ -16,6 +16,9 @@ const migrations: Migration[] = context
 
 export async function runMigrations(db: SQLiteDatabase) {
   await db.execAsync(`PRAGMA journal_mode = 'wal';`);
+  // FKs are off by default per SQLite connection. Required for ON DELETE
+  // CASCADE on vaccines.pet_id (introduced in 0002-create-vaccines-table).
+  await db.execAsync(`PRAGMA foreign_keys = ON;`);
 
   await db.execAsync(`
     CREATE TABLE IF NOT EXISTS ${MIGRATIONS_TABLE} (

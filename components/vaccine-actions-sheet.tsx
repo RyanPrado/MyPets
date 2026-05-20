@@ -7,35 +7,34 @@ import {
 import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Avatar } from '@/components/avatar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { FontFamilies, Theme } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import type { Pet } from '@/lib/db-types';
-import { formatPetMeta } from '@/lib/pet-meta';
+import type { Vaccine } from '@/lib/db-types';
+import { formatCurrencyCents, formatDate } from '@/lib/utils/format';
 
-export type PetActionsSheetRef = {
-  present: (pet: Pet) => void;
+export type VaccineActionsSheetRef = {
+  present: (vaccine: Vaccine) => void;
   dismiss: () => void;
 };
 
-export type PetActionsSheetProps = {
-  onEdit: (pet: Pet) => void;
-  onDelete: (pet: Pet) => void;
+export type VaccineActionsSheetProps = {
+  onEdit: (vaccine: Vaccine) => void;
+  onDelete: (vaccine: Vaccine) => void;
 };
 
-export const PetActionsSheet = forwardRef<PetActionsSheetRef, PetActionsSheetProps>(
-  function PetActionsSheet({ onEdit, onDelete }, ref) {
+export const VaccineActionsSheet = forwardRef<VaccineActionsSheetRef, VaccineActionsSheetProps>(
+  function VaccineActionsSheet({ onEdit, onDelete }, ref) {
     const modalRef = useRef<BottomSheetModal>(null);
-    const [pet, setPet] = useState<Pet | null>(null);
+    const [vaccine, setVaccine] = useState<Vaccine | null>(null);
     const scheme = useColorScheme() ?? 'light';
     const theme = Theme[scheme];
 
     useImperativeHandle(
       ref,
       () => ({
-        present(nextPet) {
-          setPet(nextPet);
+        present(next) {
+          setVaccine(next);
           modalRef.current?.present();
         },
         dismiss() {
@@ -59,18 +58,28 @@ export const PetActionsSheet = forwardRef<PetActionsSheetRef, PetActionsSheetPro
     );
 
     const handleEdit = () => {
-      if (!pet) return;
-      const target = pet;
+      if (!vaccine) return;
+      const target = vaccine;
       modalRef.current?.dismiss();
       onEdit(target);
     };
 
     const handleDelete = () => {
-      if (!pet) return;
-      const target = pet;
+      if (!vaccine) return;
+      const target = vaccine;
       modalRef.current?.dismiss();
       onDelete(target);
     };
+
+    const previewMeta = vaccine
+      ? [
+          formatDate(vaccine.date_given),
+          vaccine.next_due_date ? `próxima ${formatDate(vaccine.next_due_date)}` : null,
+        ]
+          .filter(Boolean)
+          .join(' · ')
+      : '';
+    const previewAmount = vaccine ? formatCurrencyCents(vaccine.amount_paid_cents) : '';
 
     return (
       <BottomSheetModal
@@ -86,27 +95,37 @@ export const PetActionsSheet = forwardRef<PetActionsSheetRef, PetActionsSheetPro
         )}
       >
         <BottomSheetView>
-          {pet ? (
+          {vaccine ? (
             <View style={styles.container}>
               <View style={[styles.preview, { borderBottomColor: theme.border }]}>
-                <Avatar name={pet.name} size="md" photoUri={pet.photo_uri} />
+                <View style={[styles.previewIcon, { backgroundColor: theme.warningForeground }]}>
+                  <IconSymbol name="cross.case.fill" size={20} color={theme.warning} />
+                </View>
                 <View style={styles.previewText}>
-                  <Text style={[styles.previewName, { color: theme.foreground }]} numberOfLines={1}>
-                    {pet.name}
+                  <Text
+                    style={[styles.previewName, { color: theme.foreground }]}
+                    numberOfLines={1}
+                  >
+                    {vaccine.name}
                   </Text>
                   <Text
                     style={[styles.previewMeta, { color: theme.mutedForeground }]}
                     numberOfLines={1}
                   >
-                    {formatPetMeta(pet.species, pet.birth_date)}
+                    {previewMeta}
                   </Text>
                 </View>
+                {previewAmount ? (
+                  <Text style={[styles.previewAmount, { color: theme.primary }]} numberOfLines={1}>
+                    {previewAmount}
+                  </Text>
+                ) : null}
               </View>
 
               <View style={styles.actions}>
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel={`Editar ${pet.name}`}
+                  accessibilityLabel={`Editar vacina ${vaccine.name}`}
                   onPress={handleEdit}
                   style={({ pressed }) => [
                     styles.action,
@@ -114,12 +133,14 @@ export const PetActionsSheet = forwardRef<PetActionsSheetRef, PetActionsSheetPro
                   ]}
                 >
                   <IconSymbol name="square.and.pencil" size={18} color={theme.foreground} />
-                  <Text style={[styles.actionLabel, { color: theme.foreground }]}>Editar pet</Text>
+                  <Text style={[styles.actionLabel, { color: theme.foreground }]}>
+                    Editar vacina
+                  </Text>
                 </Pressable>
 
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel={`Excluir ${pet.name}`}
+                  accessibilityLabel={`Excluir vacina ${vaccine.name}`}
                   onPress={handleDelete}
                   style={({ pressed }) => [
                     styles.action,
@@ -128,7 +149,7 @@ export const PetActionsSheet = forwardRef<PetActionsSheetRef, PetActionsSheetPro
                 >
                   <IconSymbol name="trash" size={18} color={theme.destructive} />
                   <Text style={[styles.actionLabel, { color: theme.destructive }]}>
-                    Excluir pet
+                    Excluir vacina
                   </Text>
                 </Pressable>
               </View>
@@ -164,8 +185,16 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
+  previewIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   previewText: {
     flex: 1,
+    minWidth: 0,
   },
   previewName: {
     fontFamily: FontFamilies.sans.semibold,
@@ -176,6 +205,11 @@ const styles = StyleSheet.create({
     fontFamily: FontFamilies.sans.regular,
     fontSize: 12,
     marginTop: 2,
+  },
+  previewAmount: {
+    fontFamily: FontFamilies.sans.bold,
+    fontSize: 14,
+    letterSpacing: -0.1,
   },
   actions: {
     paddingTop: 8,

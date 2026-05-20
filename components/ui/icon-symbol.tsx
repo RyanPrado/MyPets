@@ -1,5 +1,6 @@
 import {
   AlertTriangle,
+  ArrowLeft,
   Camera,
   Check,
   ChevronDown,
@@ -8,6 +9,7 @@ import {
   Compass,
   Home,
   Image as ImageIcon,
+  MoreHorizontal,
   PawPrint,
   PencilLine,
   Plus,
@@ -15,6 +17,7 @@ import {
   RefreshCw,
   Search,
   Send,
+  Syringe,
   Trash2,
   type LucideIcon,
 } from 'lucide-react-native';
@@ -47,6 +50,11 @@ const MAPPING: Record<string, LucideIcon> = {
   checkmark: Check,
   'photo.fill': ImageIcon,
   'camera.fill': Camera,
+  // pet detail additions
+  'chevron.left': ArrowLeft,
+  ellipsis: MoreHorizontal,
+  'cross.case.fill': Syringe,
+  'exclamationmark.triangle.fill': AlertTriangle,
 };
 
 export type IconSymbolName = keyof typeof MAPPING;
