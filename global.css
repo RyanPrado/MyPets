@@ -22,6 +22,8 @@
   --color-destructive-foreground: #fafafa;
   --color-destructive-surface: #fef2f2;
   --color-destructive-border: #fecaca;
+  --color-warning: #d97706;
+  --color-warning-foreground: #fef3c7;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -39,5 +41,7 @@
     --color-destructive-foreground: #fafafa;
     --color-destructive-surface: #450a0a;
     --color-destructive-border: #7f1d1d;
+    --color-warning: #fbbf24;
+    --color-warning-foreground: #451a03;
   }
 }

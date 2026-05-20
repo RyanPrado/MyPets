@@ -260,7 +260,7 @@ function PetRow({
         },
       ]}
     >
-      <Avatar name={pet.name} size="md" />
+      <Avatar name={pet.name} size="md" photoUri={pet.photo_uri} />
       <View style={styles.rowText}>
         <Text style={[styles.rowName, { color: theme.foreground }]} numberOfLines={1}>
           {pet.name}
