@@ -75,3 +75,59 @@ export function daysUntil(iso: string | null | undefined, now: Date = new Date()
   const diffMs = targetMidnight.getTime() - todayMidnight.getTime();
   return Math.round(diffMs / 86_400_000);
 }
+
+/**
+ * Parse a PT-BR date string `dd/mm/aaaa` into ISO `YYYY-MM-DD`. Returns
+ * `null` when the input is empty, malformed, or the components don't form
+ * a valid date (e.g. 31/02/2026, 99/99/9999).
+ */
+export function parseDateInput(input: string | null | undefined): string | null {
+  if (!input) return null;
+  const raw = input.trim();
+  if (!raw) return null;
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(raw);
+  if (!m) return null;
+  const [, dd, mm, yyyy] = m;
+  const day = Number(dd);
+  const month = Number(mm);
+  const year = Number(yyyy);
+  const parsed = new Date(year, month - 1, day);
+  if (
+    parsed.getFullYear() !== year ||
+    parsed.getMonth() !== month - 1 ||
+    parsed.getDate() !== day
+  ) {
+    return null;
+  }
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+/**
+ * Parse a PT-BR BRL string into an integer number of cents. Accepts:
+ *   "R$ 25,50" → 2550
+ *   "25,50"    → 2550
+ *   "25"       → 2500
+ *   "1.234,56" → 123456
+ *   ""         → null
+ * Returns `null` for malformed input, negative values, or > 2 decimals.
+ */
+export function parseCurrencyInput(input: string | null | undefined): number | null {
+  if (input === null || input === undefined) return null;
+  const raw = input.trim();
+  if (!raw) return null;
+  const stripped = raw.replace(/^R\$\s*/i, '').replace(/\s+/g, '');
+  // After the optional prefix removal, accept either:
+  //   - thousands-separated integer part: 1.234 or 1.234.567 with optional ,dd
+  //   - bare integer part: 25 or 0 with optional ,dd
+  const m = /^(\d{1,3}(?:\.\d{3})+|\d+)(?:,(\d{1,2}))?$/.exec(stripped);
+  if (!m) return null;
+  const intPart = m[1].replace(/\./g, '');
+  const decPart = m[2] ?? '';
+  const intCents = Number(intPart) * 100;
+  const decCents =
+    decPart.length === 0 ? 0 : decPart.length === 1 ? Number(decPart) * 10 : Number(decPart);
+  if (!Number.isFinite(intCents) || !Number.isFinite(decCents)) return null;
+  const total = intCents + decCents;
+  if (total < 0) return null;
+  return total;
+}

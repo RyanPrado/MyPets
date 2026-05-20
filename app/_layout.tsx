@@ -68,6 +68,10 @@ export default function RootLayout() {
                 options={{ presentation: 'modal', headerShown: false }}
               />
               <Stack.Screen name="pet/[id]" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="vaccine-form"
+                options={{ presentation: 'modal', headerShown: false }}
+              />
             </Stack>
             <StatusBar style="auto" />
           </ThemeProvider>
